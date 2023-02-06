@@ -17,12 +17,14 @@ from django.contrib import admin
 from django.urls import path
 
 import notes.views
+import notes.api_views
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', notes.api_views.NotesList.as_view()),
 
 
-    path('', notes.views.noteList, name='notes-list'),
-    path('notes/<int:id>/', notes.views.noteDetails, name='note-details')
+    path('v1', notes.views.noteList, name='notes-list'),
+    path('v1/notes/<int:id>/', notes.views.noteDetails, name='note-details')
 ]
