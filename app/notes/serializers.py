@@ -8,6 +8,7 @@ class TagsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tags
+        fields = '__all__'
 
 
 class NotesSerializer(serializers.ModelSerializer):
