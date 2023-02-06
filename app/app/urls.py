@@ -23,6 +23,7 @@ import notes.api_views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', notes.api_views.NotesList.as_view()),
+    path('notes/<int:id>/', notes.api_views.NotesRetrieveUpdateDestroy.as_view()),
 
 
     path('v1', notes.views.noteList, name='notes-list'),
