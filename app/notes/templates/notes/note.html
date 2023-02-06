@@ -1,0 +1,16 @@
+
+{% extends "base.html" %}
+{% block title %}{{ note.title }}{% endblock %}
+{% block content %}
+<h2>{{ note.title }}</h2>
+<p>{{ note.body }}</p>
+{% if note.is_public %}
+  <p class="note warning">
+    <strong>Public</strong>
+  </p>
+{% else %}
+  <p class="note default">
+    <strong>Private</strong>
+  </p>
+{% endif %}
+{% endblock %}

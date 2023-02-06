@@ -16,6 +16,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+import notes.views
+
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+
+
+    path('', notes.views.noteList, name='notes-list'),
+    path('notes/<int:id>/', notes.views.noteDetails, name='note-details')
 ]
