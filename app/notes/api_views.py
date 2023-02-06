@@ -19,7 +19,7 @@ class NotesPagination(LimitOffsetPagination):
 # @api_view(['GET'])
 # @permission_classes([IsAuthenticated])
 class NotesList(ListAPIView):
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
     queryset = Notes.objects.filter(private=False)
     serializer_class = NotesSerializer
     filter_backends = (DjangoFilterBackend, SearchFilter)
@@ -30,11 +30,12 @@ class NotesList(ListAPIView):
 
     def get_queryset(self):
         author = self.request.user
-        if author is None:
-            return super().get_queryset()
-        else:
+        print(author)
+        if author.id:
             queryset = Notes.objects.all()
             return queryset.filter(Q(author=author) | Q(private=False))
+        else:
+            return super().get_queryset()
         return queryset
 
 
