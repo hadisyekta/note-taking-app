@@ -1,6 +1,6 @@
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.generics import ListAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.generics import ListAPIView, RetrieveUpdateDestroyAPIView, CreateAPIView 
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.filters import SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend
@@ -12,8 +12,8 @@ from notes.models import Notes, Tags
 
 
 class NotesPagination(LimitOffsetPagination):
-    default_limit = 2
-    max_limit = 2
+    default_limit = 4
+    max_limit = 10
 
 
 # @api_view(['GET'])
@@ -37,6 +37,10 @@ class NotesList(ListAPIView):
             return queryset.filter(Q(author=author) | Q(private=False))
         return queryset
 
+
+class NotesCreate(CreateAPIView):
+    serializer_class = NotesSerializer
+    permission_classes = [IsAuthenticated]
 
 
 class NotesRetrieveUpdateDestroy(RetrieveUpdateDestroyAPIView):
@@ -64,3 +68,12 @@ class NotesRetrieveUpdateDestroy(RetrieveUpdateDestroyAPIView):
                 'private': note['private']
             })
         return response
+
+    
+
+class TagsCreate(CreateAPIView):
+    serializer_class = TagsSerializer
+    permission_classes = [IsAuthenticated]
+
+    def create(self, request, *args, **kwargs):
+        return super().create(request, *args, **kwargs)
