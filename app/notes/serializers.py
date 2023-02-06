@@ -28,11 +28,16 @@ class NotesSerializer(serializers.ModelSerializer):
         request = self.context.get('request', None)
         if request:
             validated_data['author'] = request.user
-        print(validated_data)
         tags = validated_data.pop('tags_id')
         note = Notes.objects.create(**validated_data)
         for tag in tags:
             note.tags.add(tag)
         # or : note.tags.add(*tags)
-
         return note
+
+    
+    def update(self, instance, validated_data):
+        tags = validated_data.pop('tags_id', [])
+        instance.save()
+        instance.tags.add(*tags)
+        return super().update(instance, validated_data)
