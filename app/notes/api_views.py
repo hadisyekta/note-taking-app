@@ -4,7 +4,7 @@ from rest_framework.generics import ListAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.filters import SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend
-
+from django.db.models import Q
 
 
 from notes.serializers import TagsSerializer, NotesSerializer
@@ -20,12 +20,22 @@ class NotesPagination(LimitOffsetPagination):
 # @permission_classes([IsAuthenticated])
 class NotesList(ListAPIView):
     permission_classes = [IsAuthenticated]
-    queryset = Notes.objects.all()
+    queryset = Notes.objects.filter(private=False)
     serializer_class = NotesSerializer
     filter_backends = (DjangoFilterBackend, SearchFilter)
     filterset_fields = ('id', 'tags')
     search_fields = ('title', 'body')
     pagination_class = NotesPagination
+
+
+    def get_queryset(self):
+        author = self.request.user
+        if author is None:
+            return super().get_queryset()
+        else:
+            queryset = Notes.objects.all()
+            return queryset.filter(Q(author=author) | Q(private=False))
+        return queryset
 
 
 
