@@ -5,7 +5,9 @@ from django.db.models import Q
 
 from notes.models import Notes, Tags
 
-
+# TODO: 
+# test for filter by tags
+# test for search by keyword
 class NotestListTestCase(APITestCase):
     def setUp(self):
         self.client = APIClient()
@@ -98,12 +100,6 @@ class NotesCreateTestCase(APITestCase):
             self.assertEqual(response.data[attr], expected_value)
         self.assertEqual(response.data['private'], True)
 
-# TODO: test for does not exist, 
-# test for delete only user's note, 
-# test for retrive, 
-# test for filter by tags
-# test for search by keyword
-
 
 class NotesDestroyTestCase(APITestCase):
     def setUp(self):
@@ -137,17 +133,43 @@ class NotesDestroyTestCase(APITestCase):
                    author=user2, private=True)
         n2.save()
     
+    def test_unauthorized_get_note(self):
+        note_id = Notes.objects.first().id
+        response = self.client.get('/notes/{}/'.format(note_id))
+        self.assertEqual(response.json()["detail"],
+                         'Authentication credentials were not provided.')
+        self.assertEqual(response.status_code, 403)
+
+    def test_get_note_200(self):
+        self.client.force_authenticate(self.user)
+        note = Notes.objects.filter(author=self.user).first()
+        response = self.client.get('/notes/{}/'.format(note.id))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["title"], note.title)
+    
+    def test_get_note_404(self):
+        self.client.force_authenticate(self.user)
+        note = Notes.objects.exclude(author=self.user).first()
+        response = self.client.get('/notes/{}/'.format(note.id))
+        self.assertEqual(response.status_code, 404)
+    
     def test_unauthorized_delete_note(self):
         note_id = Notes.objects.first().id
         response = self.client.delete('/notes/{}/'.format(note_id))
         self.assertEqual(response.json()["detail"],
                          'Authentication credentials were not provided.')
         self.assertEqual(response.status_code, 403)
+    
+    def test_delete_note_404(self):
+        self.client.force_authenticate(self.user)
+        note = Notes.objects.exclude(author=self.user).first()
+        response = self.client.delete('/notes/{}/'.format(note.id))
+        self.assertEqual(response.status_code, 404)
 
     def test_delete_note(self):
         self.client.force_authenticate(self.user)
         initial_note_count = Notes.objects.count()
-        note_id = Notes.objects.first().id
+        note_id = Notes.objects.filter(author=self.user).first().id
         response = self.client.delete('/notes/{}/'.format(note_id))
         self.assertEqual(response.status_code, 204)
         self.assertEqual(

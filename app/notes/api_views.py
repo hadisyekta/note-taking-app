@@ -77,9 +77,10 @@ class NotesRetrieveUpdateDestroy(RetrieveUpdateDestroyAPIView):
 class TagsPagination(LimitOffsetPagination):
     default_limit = 5
     max_limit = 10
-    
-        
+
+       
 class TagsList(ListAPIView):
+    # TODO: change to ListCreateAPIView 
     permission_classes = [IsAuthenticated]
     queryset = Tags.objects.all()
     serializer_class = TagsSerializer

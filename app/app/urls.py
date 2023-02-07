@@ -19,7 +19,7 @@ from django.urls import path
 import notes.views
 import notes.api_views
 
-
+# TODO: change urls
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', notes.api_views.NotesList.as_view()),
