@@ -1,5 +1,5 @@
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.generics import ListAPIView, RetrieveUpdateDestroyAPIView, CreateAPIView 
+from rest_framework.generics import ListAPIView, RetrieveUpdateDestroyAPIView, CreateAPIView, ListCreateAPIView
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.filters import SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend
@@ -78,17 +78,17 @@ class TagsPagination(LimitOffsetPagination):
     max_limit = 10
 
 
-class TagsList(ListAPIView):
-    # TODO: change to ListCreateAPIView 
+class TagsListCreateAPIView(ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     queryset = Tags.objects.all()
     serializer_class = TagsSerializer
     pagination_class = TagsPagination
 
-
-class TagsCreate(CreateAPIView):
-    serializer_class = TagsSerializer
-    permission_classes = [IsAuthenticated]
+    def list(request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
     def create(self, request, *args, **kwargs):
         return super().create(request, *args, **kwargs)
+
+# TODO: update, delete tags
+# TODO: add user Mangement

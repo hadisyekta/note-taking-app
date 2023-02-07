@@ -34,3 +34,20 @@ required for completing the challenge.
 ### What if I don't finish?
 
 Try to produce something that is at least minimally functional. Part of the exercise is to see what you prioritize first when you have a limited amount of time. For any unfinished tasks, please do add `TODO` comments to your code with a short explanation. You will be given an opportunity later to go into more detail and explain how you would go about finishing those tasks.
+
+
+### URLS:
+#### home url: 127.0.0.1:8000 -> 
+* Anonymouse user can see all public notes, but cannot create, update or delete
+* Authenticated user can see all public notes and all his/her notes
+    * He/She can filter notes by tag and id
+    * He/She can search notes by keyword 
+
+#### mynotes url: 127.0.0.1:8000/mynotes/add -> 
+* Authenticated user can create note
+#### mynotes url: 127.0.0.1:8000/mynotes/id -> 
+* Authenticated user can update or delete note based on the request
+
+#### tags url: 127.0.0.1:8000/tags -> 
+* Authenticated user can see list of the tags or create or a tag based on the request
+

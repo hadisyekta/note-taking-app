@@ -23,12 +23,11 @@ import notes.api_views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', notes.api_views.NotesList.as_view()),
-    path('notes/new', notes.api_views.NotesCreate.as_view()),
-    path('notes/<int:id>/', 
+    path('mynotes/add', notes.api_views.NotesCreate.as_view()),
+    path('mynotes/<int:id>/',
          notes.api_views.NotesRetrieveUpdateDestroy.as_view()),
 
-    path('tags/new', notes.api_views.TagsCreate.as_view()),
-    path('tags', notes.api_views.TagsList.as_view()),
+    path('tags/', notes.api_views.TagsListCreateAPIView.as_view()),
 
     # with templates
     path('v1', notes.views.noteList, name='notes-list'),

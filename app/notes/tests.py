@@ -109,7 +109,7 @@ class NotesCreateTestCase(APITestCase):
             'title': 'New Note - Test',
             'body': 'Awesome note',
         }
-        response = self.client.post('/notes/new', note_attrs)
+        response = self.client.post('/mynotes/add', note_attrs)
         self.assertEqual(response.json()["detail"],
                          'Authentication credentials were not provided.')
         self.assertEqual(response.status_code, 403)
@@ -123,7 +123,7 @@ class NotesCreateTestCase(APITestCase):
             'private': True,
             'tags_id': self.tags
         }
-        response = self.client.post('/notes/new', note_attrs)
+        response = self.client.post('/mynotes/add', note_attrs)
         self.assertEqual(response.status_code, 201)
         self.assertEqual(
             Notes.objects.count(),
@@ -175,7 +175,7 @@ class NotesDestroyTestCase(APITestCase):
     # GET testcases
     def test_unauthorized_get_note(self):
         note_id = Notes.objects.first().id
-        response = self.client.get('/notes/{}/'.format(note_id))
+        response = self.client.get('/mynotes/{}/'.format(note_id))
         self.assertEqual(response.json()["detail"],
                          'Authentication credentials were not provided.')
         self.assertEqual(response.status_code, 403)
@@ -183,20 +183,20 @@ class NotesDestroyTestCase(APITestCase):
     def test_get_note_200(self):
         self.client.force_authenticate(self.user)
         note = Notes.objects.filter(author=self.user).first()
-        response = self.client.get('/notes/{}/'.format(note.id))
+        response = self.client.get('/mynotes/{}/'.format(note.id))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["title"], note.title)
     
     def test_get_note_404(self):
         self.client.force_authenticate(self.user)
         note = Notes.objects.exclude(author=self.user).first()
-        response = self.client.get('/notes/{}/'.format(note.id))
+        response = self.client.get('/mynotes/{}/'.format(note.id))
         self.assertEqual(response.status_code, 404)
     
     # DELETE testcases
     def test_unauthorized_delete_note(self):
         note_id = Notes.objects.first().id
-        response = self.client.delete('/notes/{}/'.format(note_id))
+        response = self.client.delete('/mynotes/{}/'.format(note_id))
         self.assertEqual(response.json()["detail"],
                          'Authentication credentials were not provided.')
         self.assertEqual(response.status_code, 403)
@@ -204,14 +204,14 @@ class NotesDestroyTestCase(APITestCase):
     def test_delete_note_404(self):
         self.client.force_authenticate(self.user)
         note = Notes.objects.exclude(author=self.user).first()
-        response = self.client.delete('/notes/{}/'.format(note.id))
+        response = self.client.delete('/mynotes/{}/'.format(note.id))
         self.assertEqual(response.status_code, 404)
 
     def test_delete_note(self):
         self.client.force_authenticate(self.user)
         initial_note_count = Notes.objects.count()
         note_id = Notes.objects.filter(author=self.user).first().id
-        response = self.client.delete('/notes/{}/'.format(note_id))
+        response = self.client.delete('/mynotes/{}/'.format(note_id))
         self.assertEqual(response.status_code, 204)
         self.assertEqual(
             Notes.objects.count(),
@@ -225,7 +225,7 @@ class NotesDestroyTestCase(APITestCase):
     # PATCH testcases
     def test_unauthorized_update_note(self):
         note_id = Notes.objects.first().id
-        response = self.client.patch('/notes/{}/'.format(note_id))
+        response = self.client.patch('/mynotes/{}/'.format(note_id))
         self.assertEqual(response.json()["detail"],
                          'Authentication credentials were not provided.')
         self.assertEqual(response.status_code, 403)
@@ -233,7 +233,7 @@ class NotesDestroyTestCase(APITestCase):
     def test_update_Note(self):
         self.client.force_authenticate(self.user)
         note = Notes.objects.filter(author=self.user).first()
-        print(note.id, note.private, note.tags)
+        print("", note.id, note.private, note.tags)
         note_new_attr = {
                         'title': 'update Note',
                         'body': 'test update note',
@@ -241,7 +241,7 @@ class NotesDestroyTestCase(APITestCase):
                         'tags_id': self.tags
                         }
         self.client.patch(
-            '/notes/{}/'.format(note.id),
+            '/mynotes/{}/'.format(note.id),
             note_new_attr,
             format='json',
         )
@@ -251,3 +251,6 @@ class NotesDestroyTestCase(APITestCase):
         self.assertEqual(updated.private, note_new_attr["private"])
         # print(updated.tags.all())
         self.assertEqual([t.id for t in updated.tags.all()], self.tags)
+
+# TODO: Tags Test case
+# TODO: User Test case
