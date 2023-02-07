@@ -1,9 +1,17 @@
-from rest_framework.test import APITestCase, APIClient, APIRequestFactory
-from django.contrib.auth.models import User
+from rest_framework.test import APITestCase, APIClient
+# from django.contrib.auth.models import User
 from notes.models import Notes
-from notes.api_views import NotesCreate
 
+class NotestListTestCase(APITestCase):
+    def test_list_notes(self):
+        notes_count = Notes.objects.count()
+        response = self.client.get('')
+        self.assertIsNone(response.data['next'])
+        self.assertIsNone(response.data['previous'])
+        self.assertEqual(response.data['count'], notes_count)
+        self.assertEqual(len(response.data['results']), notes_count)
 
+     
 class NotesCreateTestCase(APITestCase):
     def test_create_note(self):
         client = APIClient()
@@ -24,16 +32,6 @@ class NotesCreateTestCase(APITestCase):
             self.assertEqual(response.data[attr], expected_value)
         self.assertEqual(response.data['private'], True)
 
-    
-class NotestListTestCase(APITestCase):
-    def test_list_notes(self):
-        notes_count = Notes.objects.count()
-        response = self.client.get('')
-        self.assertIsNone(response.data['next'])
-        self.assertIsNone(response.data['previous'])
-        self.assertEqual(response.data['count'], notes_count)
-        self.assertEqual(len(response.data['results']), notes_count)
-
 
 class NotesDestroyTestCase(APITestCase):
     def test_delete_note(self):
@@ -49,3 +47,18 @@ class NotesDestroyTestCase(APITestCase):
             Notes.DoesNotExist,
             Notes.objects.get, id=note_id,
         )
+
+
+class NotesUpdateTestCase(APITestCase):
+    def test_update_Note(self):
+        note = Notes.objects.first()
+        response = self.client.patch(
+            '/notes/{}/'.format(note.id),
+            {
+                'title': 'New Note',
+                'body': 'Awesome note',
+            },
+            format='json',
+        )
+        updated = Notes.objects.get(id=note.id)
+        self.assertEqual(updated.title, 'New Note')
