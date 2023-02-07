@@ -40,7 +40,6 @@ class NotesCreate(CreateAPIView):
 
 class NotesRetrieveUpdateDestroy(RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
-    # queryset = Notes.objects.all()
     lookup_field = 'id'
     serializer_class = NotesSerializer
 
@@ -78,7 +77,7 @@ class TagsPagination(LimitOffsetPagination):
     default_limit = 5
     max_limit = 10
 
-       
+
 class TagsList(ListAPIView):
     # TODO: change to ListCreateAPIView 
     permission_classes = [IsAuthenticated]
