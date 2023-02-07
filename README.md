@@ -51,3 +51,6 @@ Try to produce something that is at least minimally functional. Part of the exer
 #### tags url: 127.0.0.1:8000/tags -> 
 * Authenticated user can see list of the tags or create or a tag based on the request
 
+### Test:
+python manage.py test
+
