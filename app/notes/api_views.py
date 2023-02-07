@@ -15,8 +15,6 @@ class NotesPagination(LimitOffsetPagination):
     max_limit = 10
 
 
-# @api_view(['GET'])
-# @permission_classes([IsAuthenticated])
 class NotesList(ListAPIView):
     queryset = Notes.objects.filter(private=False)
     serializer_class = NotesSerializer
@@ -37,14 +35,23 @@ class NotesCreate(CreateAPIView):
     serializer_class = NotesSerializer
     permission_classes = [IsAuthenticated]
 
+# TODO: add permission error 
+
 
 class NotesRetrieveUpdateDestroy(RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
-    queryset = Notes.objects.all()
+    # queryset = Notes.objects.all()
     lookup_field = 'id'
     serializer_class = NotesSerializer
 
+    def get(self, request, *args, **kwargs):
+        user = self.request.user
+        self.queryset = Notes.objects.filter(Q(author=user))
+        return super().get(request, *args, **kwargs)
+
     def delete(self, request, *args, **kwargs):
+        user = self.request.user
+        self.queryset = Notes.objects.filter(Q(author=user))
         note_id = request.data.get('id')
         response = super().delete(request, *args, **kwargs)
         if response.status_code == 204:
@@ -53,6 +60,8 @@ class NotesRetrieveUpdateDestroy(RetrieveUpdateDestroyAPIView):
         return response
 
     def update(self, request, *args, **kwargs):
+        user = self.request.user
+        self.queryset = Notes.objects.filter(Q(author=user))
         response = super().update(request, *args, **kwargs)
         if response.status_code == 200:
             from django.core.cache import cache

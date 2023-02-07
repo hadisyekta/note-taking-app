@@ -15,7 +15,6 @@ class Tags(models.Model):
 
 
 class Notes(models.Model):
-
     title = models.CharField(max_length=100)
     body = models.TextField()
     tags = models.ManyToManyField(Tags, blank=True, related_name="tags")
