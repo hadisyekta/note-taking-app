@@ -24,11 +24,13 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', notes.api_views.NotesList.as_view()),
     path('notes/new', notes.api_views.NotesCreate.as_view()),
-    path('notes/<int:id>/', notes.api_views.NotesRetrieveUpdateDestroy.as_view()),
+    path('notes/<int:id>/', 
+         notes.api_views.NotesRetrieveUpdateDestroy.as_view()),
 
     path('tags/new', notes.api_views.TagsCreate.as_view()),
     path('tags', notes.api_views.TagsList.as_view()),
 
+    # with templates
     path('v1', notes.views.noteList, name='notes-list'),
     path('v1/notes/<int:id>/', notes.views.noteDetails, name='note-details')
 ]

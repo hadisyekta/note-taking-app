@@ -21,7 +21,8 @@ class Notes(models.Model):
     tags = models.ManyToManyField(Tags, blank=True, related_name="tags")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="notes")
+    author = models.ForeignKey(User, on_delete=models.CASCADE,
+                               related_name="notes")
     private = models.BooleanField('Private', default=True)
 
     class Meta:

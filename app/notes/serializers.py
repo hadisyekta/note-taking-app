@@ -14,15 +14,18 @@ class TagsSerializer(serializers.ModelSerializer):
 class NotesSerializer(serializers.ModelSerializer):
     title = serializers.CharField(min_length=2, max_length=100)
     tags = TagsSerializer(read_only=True, many=True)
-    tags_id = serializers.PrimaryKeyRelatedField(queryset=Tags.objects.all(), write_only=True,many=True)
+    tags_id = serializers.PrimaryKeyRelatedField(queryset=Tags.objects.all(),
+                                                 write_only=True, many=True)
     body = serializers.CharField(min_length=2, max_length=500)
     private = serializers.BooleanField()
     author = serializers.ReadOnlyField(source='author.username')
 
     class Meta:
         model = Notes
-        fields = ('id', 'author', 'title', 'body', 'tags', 'tags_id', 'private', 'created_at','updated_at',)
-        read_only_fields = ('id', 'author', 'tags_id', 'created_at','updated_at',)
+        fields = ('id', 'author', 'title', 'body', 'tags', 'tags_id',
+                  'private', 'created_at', 'updated_at',)
+        read_only_fields = ('id', 'author', 'tags_id', 'created_at',
+                            'updated_at',)
 
     def create(self, validated_data):
         request = self.context.get('request', None)
@@ -35,7 +38,6 @@ class NotesSerializer(serializers.ModelSerializer):
         # or : note.tags.add(*tags)
         return note
 
-    
     def update(self, instance, validated_data):
         tags = validated_data.pop('tags_id', [])
         instance.save()

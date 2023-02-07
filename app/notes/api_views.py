@@ -1,4 +1,3 @@
-from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.generics import ListAPIView, RetrieveUpdateDestroyAPIView, CreateAPIView 
 from rest_framework.pagination import LimitOffsetPagination
@@ -19,7 +18,6 @@ class NotesPagination(LimitOffsetPagination):
 # @api_view(['GET'])
 # @permission_classes([IsAuthenticated])
 class NotesList(ListAPIView):
-    # permission_classes = [IsAuthenticated]
     queryset = Notes.objects.filter(private=False)
     serializer_class = NotesSerializer
     filter_backends = (DjangoFilterBackend, SearchFilter)
@@ -27,16 +25,12 @@ class NotesList(ListAPIView):
     search_fields = ('title', 'body')
     pagination_class = NotesPagination
 
-
     def get_queryset(self):
         author = self.request.user
-        print(author)
         if author.id:
             queryset = Notes.objects.all()
             return queryset.filter(Q(author=author) | Q(private=False))
-        else:
-            return super().get_queryset()
-        return queryset
+        return super().get_queryset()
 
 
 class NotesCreate(CreateAPIView):
