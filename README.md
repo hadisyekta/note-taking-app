@@ -36,7 +36,26 @@ required for completing the challenge.
 Try to produce something that is at least minimally functional. Part of the exercise is to see what you prioritize first when you have a limited amount of time. For any unfinished tasks, please do add `TODO` comments to your code with a short explanation. You will be given an opportunity later to go into more detail and explain how you would go about finishing those tasks.
 
 
+## How to Run:
+- install docker
+- Create image from Dockerfile
+- ```docker build -t <dockerHub_account>/<image_name> . ```
+- If you want to have your image on your dockerHub
+- ```docker push <dockerHub_account>/<image_name> ```
+- Create container based on docker-compose file
+- ```docker-compose build . ```
+- Run container
+- ``` docker-compse up -d ```
+- Go to app directory: cd app
+- ``` python manage.py migrate```
+- ``` python manage.py createsuperuser```
+- You can create other user via *admin panel* : */admin* 
+
+
+
 ### URLS:
+#### admin url: 127.0.0.1:8000/admin/ -> 
+Create user
 #### home url: 127.0.0.1:8000 -> 
 * Anonymouse user can see all public notes, but cannot create, update or delete
 * Authenticated user can see all public notes and all his/her notes
@@ -52,5 +71,7 @@ Try to produce something that is at least minimally functional. Part of the exer
 * Authenticated user can see list of the tags or create or a tag based on the request
 
 ### Test:
+```
 python manage.py test
+```
 
